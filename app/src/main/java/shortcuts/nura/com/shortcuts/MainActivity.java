@@ -19,13 +19,21 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -35,8 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
     //private static final String TAG = MyActivity.class.getSimpleName();
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
+    private static final int NUM_ROW = 2;
+    private static final int NUM_COL = 2;
     private Uri uriContact;
     private String contactID;
+    private String contactNumber = null;
+    private String contactName = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,9 +82,24 @@ public class MainActivity extends AppCompatActivity {
 
             retrieveContactName();
             retrieveContactNumber();
+            createButtonwithreference();
             //retrieveContactPhoto();
 
         }
+    }
+
+    private void createButtonwithreference() {
+        TableLayout TL = (TableLayout)findViewById(R.id.TableForButtons);
+        for(int row = 0; row < NUM_ROW; row++) {
+            TableRow TR = new TableRow(this);
+            TL.addView(TR);
+            for(int col =0; col < NUM_COL; col++) {
+                Button button = new Button(this);
+                button.setText(contactName);
+                TR.addView(button);
+            }
+        }
+
     }
 
 
@@ -96,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void retrieveContactNumber() {
 
-        String contactNumber = null;
+
 
         // getting contacts ID
         Cursor cursorID = getContentResolver().query(uriContact,
@@ -132,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void retrieveContactName() {
 
-        String contactName = null;
+
 
         // querying contact data store
         Cursor cursor = getContentResolver().query(uriContact, null, null, null, null);
