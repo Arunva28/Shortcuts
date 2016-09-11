@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
          db = new SelectContactsDB(getApplicationContext());
 
-        db.createEntry(new Contact("Arun", "9731007615"));
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
             retrieveContactName();
             retrieveContactNumber();
+            db.createEntry(new Contact(contactName, contactNumber));
             //retrieveContactPhoto();
 
         }
