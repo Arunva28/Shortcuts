@@ -5,18 +5,18 @@ package shortcuts.nura.com.shortcuts;
  */
 public class Contact {
 
-    private double Number;
+    private String Number;
     private String Name;
 
     public Contact() {}
 
     public Contact(String Name, String Number) {
         super();
-        this.Number = Double.parseDouble(Number);
+        this.Number = Number;
         this.Name = Name;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         Number = number;
     }
 
@@ -28,7 +28,7 @@ public class Contact {
         return Name;
     }
 
-    public double getNumber() {
+    public String getNumber() {
         return Number;
     }
 

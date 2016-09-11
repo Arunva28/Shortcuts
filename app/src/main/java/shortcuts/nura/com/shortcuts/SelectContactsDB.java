@@ -19,9 +19,9 @@ public class SelectContactsDB extends SQLiteOpenHelper {
     private static  String database_NAME = "Selected_Contacts";
     private static  String table_Contacts = "Contacts";
     private static  String Contact_Name = "Name";
-    private static  int Contact_Number = 0;
+    private static  String Contact_Number = "Number";
 
-    private static final String[] COLUMNS = { Contact_Name, String.valueOf(Contact_Number)};
+    private static final String[] COLUMNS = { Contact_Name, Contact_Number};
 
     public SelectContactsDB(Context context) {
         super(context, database_NAME, null, database_VERSION);
@@ -30,7 +30,7 @@ public class SelectContactsDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // SQL statement to create book table
-        String CREATE_CONTATCS_TABLE = "CREATE TABLE Contacts ( " + "Name TEXT PRIMARY KEY, " + "Number int PRIMARY KEY)";
+        String CREATE_CONTATCS_TABLE = "CREATE TABLE " + table_Contacts + "( " + Contact_Name +"TEXT PRIMARY KEY, " + Contact_Number + "TEXT PRIMARY KEY)";
         db.execSQL(CREATE_CONTATCS_TABLE);
     }
 
@@ -42,16 +42,18 @@ public class SelectContactsDB extends SQLiteOpenHelper {
     }
 
     public void createEntry(Contact contact) {
+
+        long returnValue = 0;
         // get reference of the BookDB database
         SQLiteDatabase db = this.getWritableDatabase();
 
         // make values to be inserted
         ContentValues values = new ContentValues();
         values.put(Contact_Name, contact.getName());
-        values.put(String.valueOf(Contact_Number), contact.getNumber());
+        values.put(Contact_Number, contact.getNumber());
 
         // insert book
-        db.insert(table_Contacts, null, values);
+        returnValue = db.insert(table_Contacts, null, values);
 
         // close database transaction
         db.close();
