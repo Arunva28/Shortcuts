@@ -5,10 +5,12 @@
 
 package shortcuts.nura.com.shortcuts;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -33,6 +36,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private String contactNumber = null;
 
     SelectContactsDB db;
+    List<Contact> List_Contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +57,23 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-         db = new SelectContactsDB(getApplicationContext());
+        db = new SelectContactsDB(getApplicationContext());
 
+        List_Contacts = db.ReadAllEntries();
 
+        for (int i = 0; i < List_Contacts.size(); i++) {
+            TableLayout tableLayout = new TableLayout(this);
+            TableRow tableRow = new TableRow(this);
+
+            tableLayout = (TableLayout) findViewById(R.id.TableForButtons);
+            Button button = new Button(this);
+            button.setText(List_Contacts.get(i).getName());
+            //tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
+            //button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+            button.setId(i);
+            tableLayout.addView(tableRow);
+            tableRow.addView(button);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -2,10 +2,12 @@ package shortcuts.nura.com.shortcuts;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -18,6 +20,7 @@ public class SelectContactsDB extends SQLiteOpenHelper {
     // database name
     private static  String database_NAME = "Selected_Contacts";
     private static  String table_Contacts = "Contacts";
+    private static  int table_ContactsID = 0;
     private static  String Contact_Name = "Name";
     private static  String Contact_Number = "Number";
 
@@ -30,7 +33,8 @@ public class SelectContactsDB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // SQL statement to create book table
-        String CREATE_CONTATCS_TABLE = "CREATE TABLE " + table_Contacts + "( " + Contact_Name +"TEXT PRIMARY KEY, " + Contact_Number + "TEXT PRIMARY KEY)";
+        String CREATE_CONTATCS_TABLE = "CREATE TABLE " + table_Contacts + "( " + table_ContactsID + "INT PRIMARY KEY AUTOINCREMENT, "
+                + Contact_Name +"TEXT PRIMARY KEY, " + Contact_Number + "TEXT PRIMARY KEY)";
         db.execSQL(CREATE_CONTATCS_TABLE);
     }
 
@@ -57,6 +61,33 @@ public class SelectContactsDB extends SQLiteOpenHelper {
 
         // close database transaction
         db.close();
+    }
+
+    public List<Contact> ReadAllEntries() {
+
+        List<Contact> Contacts = new LinkedList<Contact>();
+
+        // select book query
+        String query = "SELECT  * FROM " + table_Contacts;
+
+        // get reference of the BookDB database
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        // parse all results
+        Contact Contact = null;
+        if (cursor.moveToFirst()) {
+            do {
+                Contact = new Contact();
+                Contact.setName(cursor.getString(0));
+                Contact.setNumber(cursor.getString(1));
+
+
+                // Add book to books
+                Contacts.add(Contact);
+            } while (cursor.moveToNext());
+        }
+        return Contacts;
     }
 
 }
