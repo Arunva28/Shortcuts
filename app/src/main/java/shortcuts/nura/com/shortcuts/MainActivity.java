@@ -42,12 +42,19 @@ public class MainActivity extends AppCompatActivity {
     private String contactID;
     private String contactName = null;
     private String contactNumber = null;
+
+    SelectContactsDB db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+         db = new SelectContactsDB(getApplicationContext());
+
+        db.createEntry(new Contact("Arun", "9731007615"));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_PICK_CONTACTS && resultCode == RESULT_OK) {
-            //Log.d(TAG, "Response: " + data.toString());
+
             uriContact = data.getData();
 
             retrieveContactName();
@@ -98,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrieveContactNumber() {
-
-
-
         // getting contacts ID
         Cursor cursorID = getContentResolver().query(uriContact,
                 new String[]{ContactsContract.Contacts._ID},
@@ -112,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         cursorID.close();
-
-        //Log.d(TAG, "Contact ID: " + contactID);
 
         // Using the contact ID now we will get contact phone number
         Cursor cursorPhone = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -130,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
             contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         }
 
-        TextView textView2 = (TextView )findViewById(R.id.textView2);
-        textView2.setText(contactNumber);
+       // TextView textView2 = (TextView )findViewById(R.id.textView2);
+        //textView2.setText(contactNumber);
 
         TableLayout tableLayout = new TableLayout(this);
         TableRow tableRow = new TableRow(this);
@@ -142,33 +144,18 @@ public class MainActivity extends AppCompatActivity {
         tableLayout.addView(tableRow);
         tableRow.addView(button);
 
-
-
-
         cursorPhone.close();
     }
 
     private void retrieveContactName() {
-
-
-
         // querying contact data store
         Cursor cursor = getContentResolver().query(uriContact, null, null, null, null);
 
         if (cursor.moveToFirst()) {
-
-
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
         }
-
         cursor.close();
-
-
     }
-
-
-
-
     public String GetPhoneNumber(String id)
     {
         String number = "";
@@ -182,9 +169,7 @@ public class MainActivity extends AppCompatActivity {
             }
             System.out.println(number);
         }
-
         phones.close();
-
         return number;
     }
 
@@ -206,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
