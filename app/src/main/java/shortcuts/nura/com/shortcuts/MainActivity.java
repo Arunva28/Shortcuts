@@ -46,9 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private String contactID;
     private String contactName = null;
     private String contactNumber = null;
+    private String Temp_ContactNumber;
 
     SelectContactsDB db;
     List<Contact> List_Contacts;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +68,31 @@ public class MainActivity extends AppCompatActivity {
             TableRow tableRow = new TableRow(this);
 
             tableLayout = (TableLayout) findViewById(R.id.TableForButtons);
-            Button button = new Button(this);
+            final Button button = new Button(this);
             button.setText(List_Contacts.get(i).getName());
             //tableRow.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT));
             //button.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
             button.setId(i);
             tableLayout.addView(tableRow);
             tableRow.addView(button);
+
+
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String Temp_ContactName = (String) button.getText();
+                    for (int i = 0; i < List_Contacts.size(); i++) {
+                        if (List_Contacts.get(i).getName().equals(Temp_ContactName)) {
+                            Temp_ContactNumber = List_Contacts.get(i).getNumber();
+                            CallPhone(Temp_ContactNumber);
+                            break;
+                        }
+                    }
+
+                }
+            });
+
         }
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +104,31 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    
+    private void CallPhone(String temp_ContactNumber) {
+
+        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + temp_ContactNumber));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        startActivity(callIntent);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -154,8 +197,6 @@ public class MainActivity extends AppCompatActivity {
             contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         }
 
-       // TextView textView2 = (TextView )findViewById(R.id.textView2);
-        //textView2.setText(contactNumber);
 
         TableLayout tableLayout = new TableLayout(this);
         TableRow tableRow = new TableRow(this);
